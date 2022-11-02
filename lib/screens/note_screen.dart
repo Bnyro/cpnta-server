@@ -1,4 +1,5 @@
 import 'package:cpnta/globals.dart';
+import 'package:cpnta/providers/note_provider.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
@@ -6,10 +7,12 @@ import '../utilities/date_parser.dart';
 
 class NoteScreen extends StatefulWidget {
   final Note note;
+  final bool isNew;
 
   const NoteScreen({
     super.key,
     required this.note,
+    required this.isNew,
   });
 
   @override
@@ -27,7 +30,22 @@ class _NoteScreenState extends State<NoteScreen> {
     contentController.text = widget.note.content;
   }
 
-  void _onFabPressed() {}
+  void _onFabPressed() async {
+    if (titleController.text != "" || contentController.text != "") {
+      setState(() {
+        widget.note.title = titleController.text;
+        widget.note.content = contentController.text;
+      });
+
+      var response = widget.isNew
+          ? await createNote(titleController.text, contentController.text)
+          : await updateNote(widget.note);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Status code: ${response.statusCode}"),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

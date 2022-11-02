@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/note.dart';
 import '../providers/note_provider.dart';
 import '../widgets/note_widget.dart';
+import 'note_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,7 +14,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void _onFabPressed() {}
+  void _onFabPressed() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => NoteScreen(
+              note: Note(
+                  id: null,
+                  content: "",
+                  title: "",
+                  createdAt: "",
+                  modifiedAt: "",
+                  token: ""),
+              isNew: true,
+            )));
+  }
 
   final _notes = fetchNotes();
 

@@ -21,7 +21,10 @@ class _NoteWidgetState extends State<NoteWidget> {
     return GestureDetector(
         onTap: () => {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => NoteScreen(note: widget.note)))
+                  builder: (context) => NoteScreen(
+                        note: widget.note,
+                        isNew: false,
+                      )))
             },
         child: Card(
             margin: const EdgeInsets.all(16.0),

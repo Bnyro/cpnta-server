@@ -1,12 +1,12 @@
 class Note {
-  final int id;
-  final String title;
-  final String content;
+  int? id;
+  String title;
+  String content;
   final String createdAt;
   final String modifiedAt;
-  final String token;
+  String token;
 
-  const Note({
+  Note({
     required this.id,
     required this.title,
     required this.content,
@@ -17,12 +17,14 @@ class Note {
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      id: json["ID"],
-      title: json["title"],
-      content: json["content"],
-      createdAt: json['CreatedAt'],
-      modifiedAt: json['UpdatedAt'],
-      token: json['token']
-    );
+        id: json["ID"],
+        title: json["title"],
+        content: json["content"],
+        createdAt: json["CreatedAt"],
+        modifiedAt: json["UpdatedAt"],
+        token: json["token"]);
   }
+
+  Map<String, dynamic> toJson() =>
+      {"ID": id, "title": title, "content": content};
 }
