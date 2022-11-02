@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
-        tooltip: 'New',
         child: const Icon(Icons.add),
       ),
     );
