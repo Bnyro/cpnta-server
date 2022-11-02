@@ -6,12 +6,12 @@ import '../models/note.dart';
 
 class NoteWidget extends StatefulWidget {
   final Note note;
-  final VoidCallback deletionCallback;
+  final VoidCallback refreshNotes;
 
   const NoteWidget({
     super.key,
     required this.note,
-    required this.deletionCallback,
+    required this.refreshNotes,
   });
 
   @override
@@ -27,11 +27,12 @@ class _NoteWidgetState extends State<NoteWidget> {
                   builder: (context) => NoteScreen(
                         note: widget.note,
                         isNew: false,
+                        refreshNotes: widget.refreshNotes,
                       )))
             },
         onDoubleTap: () => {
               deleteNote(widget.note.id!),
-              widget.deletionCallback(),
+              widget.refreshNotes(),
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text('Note deleted!'),
@@ -39,6 +40,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                     label: 'Undo',
                     onPressed: () {
                       createNote(widget.note.title, widget.note.content);
+                      widget.refreshNotes();
                     },
                   ),
                 ),

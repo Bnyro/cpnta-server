@@ -8,11 +8,13 @@ import '../utilities/date_parser.dart';
 class NoteScreen extends StatefulWidget {
   final Note note;
   final bool isNew;
+  final VoidCallback refreshNotes;
 
   const NoteScreen({
     super.key,
     required this.note,
     required this.isNew,
+    required this.refreshNotes,
   });
 
   @override
@@ -44,6 +46,7 @@ class _NoteScreenState extends State<NoteScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Status code: ${response.statusCode}"),
       ));
+      widget.refreshNotes();
     }
   }
 

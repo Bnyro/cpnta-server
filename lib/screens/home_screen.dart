@@ -14,21 +14,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var _notes = fetchNotes();
+
   void _onFabPressed() {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => NoteScreen(
-              note: Note(
-                  id: null,
-                  content: "",
-                  title: "",
-                  createdAt: "",
-                  modifiedAt: "",
-                  token: ""),
+              note: Note.empty(),
               isNew: true,
+              refreshNotes: refreshNotes,
             )));
   }
 
-  var _notes = fetchNotes();
+  void refreshNotes() => {
+        setState(() {
+          var notes = fetchNotes();
+          _notes = notes;
+        })
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
             children: List.generate(snapshot.requireData.length, (index) {
               return NoteWidget(
                 note: snapshot.requireData[index],
-                deletionCallback: () => {_notes = fetchNotes()},
+                refreshNotes: refreshNotes,
               );
             }),
           );

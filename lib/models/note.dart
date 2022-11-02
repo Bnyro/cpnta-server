@@ -25,6 +25,16 @@ class Note {
         token: json["token"]);
   }
 
+  factory Note.empty() {
+    return Note(
+        id: null,
+        content: "",
+        title: "",
+        createdAt: "",
+        modifiedAt: "",
+        token: "");
+  }
+
   Map<String, dynamic> toJson() =>
       {"ID": id, "title": title, "content": content};
 }
