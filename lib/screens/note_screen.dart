@@ -2,6 +2,7 @@ import 'package:cpnta/globals.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
+import '../utilities/date_parser.dart';
 
 class NoteScreen extends StatefulWidget {
   final Note note;
@@ -36,7 +37,7 @@ class _NoteScreenState extends State<NoteScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.all(32.0),
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           TextField(
             controller: titleController,
             maxLines: 1,
@@ -56,6 +57,15 @@ class _NoteScreenState extends State<NoteScreen> {
             ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
+          const SizedBox(height: 10.0),
+          Opacity(
+            opacity: 0.5,
+            child: Column(children: [
+              Text("Created at ${formatTime(widget.note.createdAt)}"),
+              const SizedBox(height: 5.0),
+              Text("Modified at ${formatTime(widget.note.modifiedAt)}")
+            ]),
+          )
         ]),
       ),
       floatingActionButton: FloatingActionButton(
