@@ -17,20 +17,22 @@ class NoteWidget extends StatefulWidget {
 class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-        margin: const EdgeInsets.all(16.0),
-        child: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(widget.note.title,
-                style: Theme.of(context).textTheme.headline5),
-            const SizedBox(height: 10.0),
-            Text(
-              widget.note.content,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        )));
+    return GestureDetector(
+        onTap: () => {},
+        child: Card(
+            margin: const EdgeInsets.all(16.0),
+            child: Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(widget.note.title,
+                    style: Theme.of(context).textTheme.headline5),
+                const SizedBox(height: 10.0),
+                Text(
+                  widget.note.content,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ))));
   }
 }
