@@ -1,4 +1,6 @@
-import 'package:cpnta/screens/home_page.dart';
+import 'package:cpnta/globals.dart';
+import 'package:cpnta/screens/home_screen.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,15 +10,28 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static final _defaultLightColorScheme =
+      ColorScheme.fromSwatch(primarySwatch: Colors.blue);
+
+  static final _defaultDarkColorScheme = ColorScheme.fromSwatch(
+      primarySwatch: Colors.blue, brightness: Brightness.dark);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CPNTA',
-      theme: ThemeData(
-        useMaterial3: true,
-        primarySwatch: Colors.red,
-      ),
-      home: const HomePage(title: 'CPNTA'),
-    );
+    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
+      return MaterialApp(
+        title: appName,
+        theme: ThemeData(
+          colorScheme: lightColorScheme ?? _defaultLightColorScheme,
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+          colorScheme: darkColorScheme ?? _defaultDarkColorScheme,
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.dark,
+        home: const HomePage(),
+      );
+    });
   }
 }

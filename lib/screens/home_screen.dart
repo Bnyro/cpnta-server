@@ -1,3 +1,4 @@
+import 'package:cpnta/globals.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
@@ -5,9 +6,7 @@ import '../providers/note_provider.dart';
 import '../widgets/note_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text(appName),
       ),
       body: Center(
           child: FutureBuilder<List<Note>>(
