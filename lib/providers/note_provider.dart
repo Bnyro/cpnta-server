@@ -1,43 +1,53 @@
 import 'dart:convert';
 
+import 'package:cpnta/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:cpnta/globals.dart' as globals;
 import 'package:cpnta/models/note.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../globals.dart';
-
-Uri getUri() {
-  return Uri.parse("${globals.baseUrl}/notes");
+Future<String> getBaseUrl() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("apiUrl") ?? defaultApiUrl;
 }
 
-Map<String, String> getHeaders() {
+Future<String> getToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString("token") ?? defaultToken;
+}
+
+Uri getUri() {
+  return Uri.parse("${getBaseUrl()}/notes");
+}
+
+Future<Map<String, String>> getHeaders() async {
   return {
     'Content-type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': token
+    'Authorization': await getToken()
   };
 }
 
 Future<List<Note>> fetchNotes() async {
-  http.Response response = await http.get(getUri(), headers: getHeaders());
+  http.Response response =
+      await http.get(getUri(), headers: await getHeaders());
   var responseJson = json.decode(response.body);
   return (responseJson as List).map((p) => Note.fromJson(p)).toList();
 }
 
 Future<http.Response> createNote(String title, String content) async {
   return await http.post(getUri(),
-      headers: getHeaders(),
+      headers: await getHeaders(),
       body: json.encode({"title": title, "content": content}));
 }
 
 Future<http.Response> updateNote(Note note) async {
   return await http.patch(getUri(),
-      headers: getHeaders(), body: jsonEncode(note.toJson()));
+      headers: await getHeaders(), body: jsonEncode(note.toJson()));
 }
 
 Future<http.Response> deleteNote(int noteId) async {
   return await http.delete(
-    Uri.parse("${globals.baseUrl}/notes/$noteId"),
-    headers: getHeaders(),
+    Uri.parse("${getBaseUrl()}/notes/$noteId"),
+    headers: await getHeaders(),
   );
 }

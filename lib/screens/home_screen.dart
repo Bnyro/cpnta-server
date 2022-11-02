@@ -1,4 +1,5 @@
-import 'package:cpnta/globals.dart';
+import 'package:cpnta/constants.dart';
+import 'package:cpnta/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
@@ -25,6 +26,12 @@ class _HomePageState extends State<HomePage> {
             )));
   }
 
+  void _onSettingsClicked() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SettingsScreen(),
+    ));
+  }
+
   void refreshNotes() => {
         setState(() {
           var notes = fetchNotes();
@@ -37,6 +44,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appName),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.settings), onPressed: _onSettingsClicked)
+        ],
       ),
       body: Center(
           child: FutureBuilder<List<Note>>(
@@ -44,16 +55,22 @@ class _HomePageState extends State<HomePage> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const CircularProgressIndicator();
+          } else if (snapshot.requireData.isEmpty) {
+            return Text(
+              "No notes yet!",
+              style: Theme.of(context).textTheme.headline4,
+            );
+          } else {
+            return GridView.count(
+              crossAxisCount: 2,
+              children: List.generate(snapshot.requireData.length, (index) {
+                return NoteWidget(
+                  note: snapshot.requireData[index],
+                  refreshNotes: refreshNotes,
+                );
+              }),
+            );
           }
-          return GridView.count(
-            crossAxisCount: 2,
-            children: List.generate(snapshot.requireData.length, (index) {
-              return NoteWidget(
-                note: snapshot.requireData[index],
-                refreshNotes: refreshNotes,
-              );
-            }),
-          );
         },
       )),
       floatingActionButton: FloatingActionButton(

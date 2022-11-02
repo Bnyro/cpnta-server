@@ -1,4 +1,4 @@
-import 'package:cpnta/globals.dart';
+import 'package:cpnta/constants.dart';
 import 'package:cpnta/screens/home_screen.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';

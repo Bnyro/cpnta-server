@@ -1,4 +1,4 @@
-import 'package:cpnta/globals.dart';
+import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/note_provider.dart';
 import 'package:flutter/material.dart';
 
