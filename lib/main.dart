@@ -1,4 +1,7 @@
+import 'package:cpnta/providers/note_provider.dart';
 import 'package:flutter/material.dart';
+
+import 'models/note.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,10 +33,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  List<String> titles = ["1", "2", "3", "4", "5", "6"];
-
   void _onFabPressed() {}
+
+  final _notes = fetchNotes();
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +44,28 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: GridView.count(
-          crossAxisCount: 2,
-          children: List.generate(titles.length, (index) {
-          return Center(
-            child: Text(
-              titles[index],
-              style: Theme.of(context).textTheme.headline5,
-            ),
+          child: FutureBuilder<List<Note>>(
+        future: _notes,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+          return GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(snapshot.requireData.length, (index) {
+              return Center(
+                child: Text(
+                  snapshot.requireData[index].title,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              );
+            }),
           );
-        }),
-      ),
-      ),
+        },
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
-        tooltip: 'Increment',
+        tooltip: 'New',
         child: const Icon(Icons.add),
       ),
     );
