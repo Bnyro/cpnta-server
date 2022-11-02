@@ -55,6 +55,17 @@ class _NoteScreenState extends State<NoteScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appName),
+        actions: [
+          IconButton(
+              onPressed: () => {
+                    deleteNote(widget.note.id!).then((response) => {
+                          widget.refreshNotes(),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Deleted"))),
+                        })
+                  },
+              icon: const Icon(Icons.delete))
+        ],
       ),
       body: Container(
         margin: const EdgeInsets.all(32.0),
