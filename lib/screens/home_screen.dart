@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
             )));
   }
 
-  final _notes = fetchNotes();
+  var _notes = fetchNotes();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,10 @@ class _HomePageState extends State<HomePage> {
           return GridView.count(
             crossAxisCount: 2,
             children: List.generate(snapshot.requireData.length, (index) {
-              return NoteWidget(note: snapshot.requireData[index]);
+              return NoteWidget(
+                note: snapshot.requireData[index],
+                deletionCallback: () => {_notes = fetchNotes()},
+              );
             }),
           );
         },

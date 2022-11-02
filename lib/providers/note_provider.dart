@@ -34,3 +34,10 @@ Future<http.Response> updateNote(Note note) async {
   return await http.patch(getUri(),
       headers: getHeaders(), body: jsonEncode(note.toJson()));
 }
+
+Future<http.Response> deleteNote(int noteId) async {
+  return await http.delete(
+    Uri.parse("${globals.baseUrl}/notes/$noteId"),
+    headers: getHeaders(),
+  );
+}

@@ -1,3 +1,4 @@
+import 'package:cpnta/providers/note_provider.dart';
 import 'package:cpnta/screens/note_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -5,10 +6,12 @@ import '../models/note.dart';
 
 class NoteWidget extends StatefulWidget {
   final Note note;
+  final VoidCallback deletionCallback;
 
   const NoteWidget({
     super.key,
     required this.note,
+    required this.deletionCallback,
   });
 
   @override
@@ -25,6 +28,21 @@ class _NoteWidgetState extends State<NoteWidget> {
                         note: widget.note,
                         isNew: false,
                       )))
+            },
+        onDoubleTap: () => {
+              deleteNote(widget.note.id!),
+              widget.deletionCallback(),
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Note deleted!'),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () {
+                      createNote(widget.note.title, widget.note.content);
+                    },
+                  ),
+                ),
+              )
             },
         child: Card(
             margin: const EdgeInsets.all(16.0),
