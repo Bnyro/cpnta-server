@@ -1,4 +1,5 @@
 import 'package:cpnta/providers/note_provider.dart';
+import 'package:cpnta/widgets/note_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'models/note.dart';
@@ -53,12 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return GridView.count(
             crossAxisCount: 2,
             children: List.generate(snapshot.requireData.length, (index) {
-              return Center(
-                child: Text(
-                  snapshot.requireData[index].title,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              );
+              return NoteWidget(note: snapshot.requireData[index]);
             }),
           );
         },
