@@ -1,3 +1,4 @@
+import 'package:cpnta/screens/note_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
@@ -18,7 +19,10 @@ class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => {},
+        onTap: () => {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NoteScreen(note: widget.note)))
+            },
         child: Card(
             margin: const EdgeInsets.all(16.0),
             child: Center(
