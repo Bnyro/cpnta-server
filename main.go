@@ -23,5 +23,5 @@ func main() {
 	app.Delete("/notes/:id", handlers.DeleteNote)
 	app.Patch("/notes", handlers.UpdateNote)
 
-	log.Fatal(app.Listen(":8000"))
+	log.Fatal(app.Listen(":8001"))
 }
