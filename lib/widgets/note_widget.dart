@@ -28,20 +28,21 @@ class _NoteWidgetState extends State<NoteWidget> {
   }
 
   void _deleteNote() {
-    deleteNote(widget.note.id!);
-    widget.refreshNotes();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Note deleted!'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            createNote(widget.note.title, widget.note.content);
-            widget.refreshNotes();
-          },
-        ),
-      ),
-    );
+    deleteNote(widget.note.id!).then((value) => {
+          widget.refreshNotes(),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Note deleted!'),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () {
+                  createNote(widget.note.title, widget.note.content);
+                  widget.refreshNotes();
+                },
+              ),
+            ),
+          )
+        });
   }
 
   void _showContextMenu(BuildContext context) async {
