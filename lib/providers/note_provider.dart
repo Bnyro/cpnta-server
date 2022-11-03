@@ -15,8 +15,8 @@ Future<String> getToken() async {
   return prefs.getString("token") ?? defaultToken;
 }
 
-Uri getUri() {
-  return Uri.parse("${getBaseUrl()}/notes");
+Future<Uri> getUri() async {
+  return Uri.parse("${await getBaseUrl()}/notes");
 }
 
 Future<Map<String, String>> getHeaders() async {
@@ -29,25 +29,25 @@ Future<Map<String, String>> getHeaders() async {
 
 Future<List<Note>> fetchNotes() async {
   http.Response response =
-      await http.get(getUri(), headers: await getHeaders());
+      await http.get(await getUri(), headers: await getHeaders());
   var responseJson = json.decode(response.body);
   return (responseJson as List).map((p) => Note.fromJson(p)).toList();
 }
 
 Future<http.Response> createNote(String title, String content) async {
-  return await http.post(getUri(),
+  return await http.post(await getUri(),
       headers: await getHeaders(),
       body: json.encode({"title": title, "content": content}));
 }
 
 Future<http.Response> updateNote(Note note) async {
-  return await http.patch(getUri(),
+  return await http.patch(await getUri(),
       headers: await getHeaders(), body: jsonEncode(note.toJson()));
 }
 
 Future<http.Response> deleteNote(int noteId) async {
   return await http.delete(
-    Uri.parse("${getBaseUrl()}/notes/$noteId"),
+    Uri.parse("${await getBaseUrl()}/notes/$noteId"),
     headers: await getHeaders(),
   );
 }

@@ -1,3 +1,3 @@
 const appName = "CPNTA";
-const defaultApiUrl = "http://localhost:8000";
+const defaultApiUrl = "http://alpine.fritz.box:444";
 const defaultToken = "SuperSuperSuperSuper";
