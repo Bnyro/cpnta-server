@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/db_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,31 +36,52 @@ Future<Map<String, String>> getHeaders() async {
 
 Future<List<Note>> fetchNotes() async {
   bool isOnline = await hasNetwork();
+  var dbNotes = await (await dbProvider.getDataBase()).noteDao.getAllNotes();
+
   if (!isOnline) {
-    return (await dbProvider.getDataBase()).noteDao.getAllNotes();
+    return dbNotes;
   }
   http.Response response =
       await http.get(await getUri(), headers: await getHeaders());
   var responseJson = json.decode(response.body);
-  List<Note> notes =
+
+  List<Note> onlineNotes =
       (responseJson as List).map((p) => Note.fromJson(p)).toList();
-  dbProvider.getDataBase().then((db) => db.noteDao.insertNotes(notes));
+
+  List<Note> notes = onlineNotes;
+
+  for (var dbNote in dbNotes) {
+    if (onlineNotes.where((i) => dbNote.id == i.id).toList().isEmpty) {
+      dbProvider.db?.noteDao.deleteNote(dbNote.id!);
+      createNote(dbNote.title, dbNote.content);
+    }
+    notes.add(dbNote);
+  }
+  dbProvider.db?.noteDao.clear();
+  dbProvider.db?.noteDao.insertNotes(notes);
+
   return notes;
 }
 
-Future<http.Response> createNote(String title, String content) async {
-  dbProvider.getDataBase().then((db) async => {
-        db.noteDao.insertNote(Note(
-            id: Random().nextInt(2 ^ 52),
-            title: title,
-            content: content,
-            createdAt: "",
-            modifiedAt: "",
-            token: await getToken()))
-      });
-  return await http.post(await getUri(),
+Future<http.Response?> createNote(String title, String content) async {
+  bool isOnline = await hasNetwork();
+  if (!isOnline) {
+    Note note = Note.empty();
+    note.id = Random().nextInt(100000);
+    note.token = await getToken();
+    note.title = title;
+    note.content = content;
+
+    dbProvider.getDataBase().then((db) async => {db.noteDao.insertNote(note)});
+    return null;
+  }
+  http.Response response = await http.post(await getUri(),
       headers: await getHeaders(),
       body: json.encode({"title": title, "content": content}));
+  Note note = Note.fromJson(json.decode(response.body));
+  dbProvider.db?.noteDao.insertNote(note);
+
+  return response;
 }
 
 Future<http.Response> updateNote(Note note) async {

@@ -44,7 +44,7 @@ class _NoteScreenState extends State<NoteScreen> {
           : await updateNote(widget.note);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Status code: ${response.statusCode}"),
+        content: Text("Status code: ${response?.statusCode}"),
       ));
       widget.refreshNotes();
     }

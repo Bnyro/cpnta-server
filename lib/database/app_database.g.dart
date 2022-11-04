@@ -171,14 +171,19 @@ class _$NoteDao extends NoteDao {
   }
 
   @override
+  Future<void> clear() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Note');
+  }
+
+  @override
   Future<void> insertNote(Note note) async {
     await _noteInsertionAdapter.insert(note, OnConflictStrategy.abort);
   }
 
   @override
-  Future<List<int>> insertNotes(List<Note> note) {
+  Future<List<int>> insertNotes(List<Note> notes) {
     return _noteInsertionAdapter.insertListAndReturnIds(
-        note, OnConflictStrategy.abort);
+        notes, OnConflictStrategy.abort);
   }
 
   @override
@@ -187,7 +192,7 @@ class _$NoteDao extends NoteDao {
   }
 
   @override
-  Future<int> deleteAll(List<Note> list) {
-    return _noteDeletionAdapter.deleteListAndReturnChangedRows(list);
+  Future<int> deleteAll(List<Note> notes) {
+    return _noteDeletionAdapter.deleteListAndReturnChangedRows(notes);
   }
 }
