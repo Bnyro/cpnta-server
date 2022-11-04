@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="48"
+   width="48"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="icon.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient10709">
+      <stop
+         style="stop-color:#80000f;stop-opacity:1;"
+         offset="0"
+         id="stop10705" />
+      <stop
+         style="stop-color:#ff6600;stop-opacity:1;"
+         offset="1"
+         id="stop10707" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10709"
+       id="linearGradient10711"
+       x1="12.372229"
+       y1="24"
+       x2="35.627771"
+       y2="24"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="23.658614"
+     inkscape:cx="6.931936"
+     inkscape:cy="-4.9876125"
+     inkscape:window-width="1900"
+     inkscape:window-height="1023"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     d="M 18.149778,32.357461 H 29.850222 V 30.177253 H 18.149778 Z m 0,-6.177253 H 29.850222 V 24 H 18.149778 Z m -3.597342,12.354506 q -0.872083,0 -1.526145,-0.654062 -0.654062,-0.654063 -0.654062,-1.526146 V 11.645494 q 0,-0.872083 0.654062,-1.526146 0.654062,-0.6540616 1.526145,-0.6540616 h 13.117579 l 7.957756,7.9577556 v 18.931464 q 0,0.872083 -0.654062,1.526146 -0.654062,0.654062 -1.526145,0.654062 z M 26.579912,18.404136 h 6.867652 l -6.867652,-6.758642 z"
+     id="path2"
+     style="stroke-width:0.726736;fill-opacity:1;fill:url(#linearGradient10711)" />
+</svg>

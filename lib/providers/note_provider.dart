@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/db_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
