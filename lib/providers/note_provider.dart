@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cpnta/constants.dart';
-import 'package:cpnta/database/db_provider.dart';
+import 'package:cpnta/providers/db_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'network_provider.dart';
+
+DbProvider dbProvider = DbProvider();
 
 Future<String> getBaseUrl() async {
   final prefs = await SharedPreferences.getInstance();
@@ -30,15 +34,21 @@ Future<Map<String, String>> getHeaders() async {
 }
 
 Future<List<Note>> fetchNotes() async {
-  return (await getDataBase()).noteDao.getAllNotes();
+  bool isOnline = await hasNetwork();
+  if (!isOnline) {
+    return (await dbProvider.getDataBase()).noteDao.getAllNotes();
+  }
   http.Response response =
       await http.get(await getUri(), headers: await getHeaders());
   var responseJson = json.decode(response.body);
-  return (responseJson as List).map((p) => Note.fromJson(p)).toList();
+  List<Note> notes =
+      (responseJson as List).map((p) => Note.fromJson(p)).toList();
+  dbProvider.getDataBase().then((db) => db.noteDao.insertNotes(notes));
+  return notes;
 }
 
 Future<http.Response> createNote(String title, String content) async {
-  getDataBase().then((db) async => {
+  dbProvider.getDataBase().then((db) async => {
         db.noteDao.insertNote(Note(
             id: Random().nextInt(2 ^ 52),
             title: title,
@@ -53,7 +63,7 @@ Future<http.Response> createNote(String title, String content) async {
 }
 
 Future<http.Response> updateNote(Note note) async {
-  getDataBase().then((db) => {
+  dbProvider.getDataBase().then((db) => {
         db.noteDao.updateNote(note),
       });
   return await http.patch(await getUri(),
@@ -61,7 +71,7 @@ Future<http.Response> updateNote(Note note) async {
 }
 
 Future<http.Response> deleteNote(int noteId) async {
-  getDataBase().then((db) => {
+  dbProvider.getDataBase().then((db) => {
         db.noteDao.deleteNote(noteId),
       });
   return await http.delete(
