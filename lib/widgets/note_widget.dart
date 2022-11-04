@@ -36,8 +36,8 @@ class _NoteWidgetState extends State<NoteWidget> {
               action: SnackBarAction(
                 label: 'Undo',
                 onPressed: () {
-                  createNote(widget.note.title, widget.note.content);
-                  widget.refreshNotes();
+                  createNote(widget.note.title, widget.note.content)
+                      .then((value) => {widget.refreshNotes()});
                 },
               ),
             ),
