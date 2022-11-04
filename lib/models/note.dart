@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Note {
+  @PrimaryKey(autoGenerate: false)
   int? id;
   String title;
   String content;
