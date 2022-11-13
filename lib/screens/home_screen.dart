@@ -32,10 +32,10 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  void _refreshNotes() {
+  Future<void> _refreshNotes() async {
+    var notes = await fetchNotes();
     setState(() {
-      var notes = fetchNotes();
-      _notes = notes;
+      _notes = Future.value(notes);
     });
   }
 
@@ -50,30 +50,33 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.settings), onPressed: _onSettingsClicked)
         ],
       ),
-      body: Center(
-          child: FutureBuilder<List<Note>>(
-        future: _notes,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.requireData.isEmpty) {
-            return Text(
-              "No notes yet!",
-              style: Theme.of(context).textTheme.headline4,
-            );
-          } else {
-            return GridView.count(
-              crossAxisCount: 2,
-              children: List.generate(snapshot.requireData.length, (index) {
-                return NoteWidget(
-                  note: snapshot.requireData[index],
-                  refreshNotes: _refreshNotes,
-                );
-              }),
-            );
-          }
-        },
-      )),
+      body: RefreshIndicator(
+          onRefresh: _refreshNotes,
+          child: Center(
+            child: FutureBuilder<List<Note>>(
+                future: _notes,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.requireData.isEmpty) {
+                    return Text(
+                      "No notes yet!",
+                      style: Theme.of(context).textTheme.headline4,
+                    );
+                  } else {
+                    return GridView.count(
+                      crossAxisCount: 2,
+                      children:
+                          List.generate(snapshot.requireData.length, (index) {
+                        return NoteWidget(
+                          note: snapshot.requireData[index],
+                          refreshNotes: _refreshNotes,
+                        );
+                      }),
+                    );
+                  }
+                }),
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: _onFabPressed,
         child: const Icon(Icons.add),

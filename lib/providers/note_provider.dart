@@ -102,6 +102,7 @@ Future<http.Response> deleteNote(int noteId) async {
 }
 
 Future<http.Response> deleteAllNotes() async {
+  dbProvider.getDataBase().then((db) => db.noteDao.clear());
   return await http.delete(
     await getUri(),
     headers: await getHeaders(),
