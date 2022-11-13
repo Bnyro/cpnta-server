@@ -78,6 +78,18 @@ func DeleteNote(c *fiber.Ctx) error {
 	return c.SendStatus(200)
 }
 
+func DeleteAllNotes(c *fiber.Ctx) error {
+	token, valid := authValid(c)
+
+	if !valid {
+		return c.SendStatus(403)
+	}
+
+	config.Database.Where("token = ?", token).Delete(&entities.Note{})
+
+	return c.SendStatus(200)
+}
+
 func authValid(c *fiber.Ctx) (string, bool) {
 	token := c.GetReqHeaders()["Authorization"]
 	valid := token != "" && len(token) == 20
