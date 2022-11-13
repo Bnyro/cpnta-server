@@ -64,8 +64,7 @@ class _HomePageState extends State<HomePage> {
                       style: Theme.of(context).textTheme.headline4,
                     );
                   } else {
-                    return GridView.count(
-                      crossAxisCount: 2,
+                    return ListView(
                       children:
                           List.generate(snapshot.requireData.length, (index) {
                         return NoteWidget(

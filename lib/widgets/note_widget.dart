@@ -88,19 +88,24 @@ class _NoteWidgetState extends State<NoteWidget> {
         onLongPress: () => _showContextMenu(context),
         onTapDown: (details) => _getTapPosition(details),
         child: Card(
-            margin: const EdgeInsets.all(16.0),
-            child: Center(
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            child: Container(
+                padding: const EdgeInsets.all(16),
                 child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(widget.note.title,
-                    style: Theme.of(context).textTheme.headline5),
-                const SizedBox(height: 10.0),
-                Text(
-                  widget.note.content,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ))));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.note.title != "")
+                      Text(widget.note.title,
+                          style: Theme.of(context).textTheme.headline5),
+                    if (widget.note.title != "" && widget.note.content != "")
+                      const SizedBox(height: 5),
+                    if (widget.note.content != "")
+                      Text(
+                        widget.note.content,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                  ],
+                ))));
   }
 }
