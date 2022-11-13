@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/db_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +48,6 @@ Future<List<Note>> fetchNotes() async {
   for (var dbNote in dbNotes) {
     if (onlineNotes.where((i) => dbNote.id == i.id).isEmpty) {
       dirty = true;
-      debugPrint(dbNote.id.toString());
       await createNote(dbNote.title, dbNote.content);
     }
   }
