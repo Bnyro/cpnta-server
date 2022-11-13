@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => NoteScreen(
               note: Note.empty(),
               isNew: true,
-              refreshNotes: refreshNotes,
+              refreshNotes: _refreshNotes,
             )));
   }
 
@@ -32,12 +32,12 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  void refreshNotes() => {
-        setState(() {
-          var notes = fetchNotes();
-          _notes = notes;
-        })
-      };
+  void _refreshNotes() {
+    setState(() {
+      var notes = fetchNotes();
+      _notes = notes;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
               children: List.generate(snapshot.requireData.length, (index) {
                 return NoteWidget(
                   note: snapshot.requireData[index],
-                  refreshNotes: refreshNotes,
+                  refreshNotes: _refreshNotes,
                 );
               }),
             );

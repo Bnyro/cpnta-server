@@ -50,11 +50,10 @@ Future<List<Note>> fetchNotes() async {
   List<Note> notes = onlineNotes;
 
   for (var dbNote in dbNotes) {
-    if (onlineNotes.where((i) => dbNote.id == i.id).toList().isEmpty) {
+    if (onlineNotes.where((i) => dbNote.id == i.id).isEmpty) {
       dbProvider.db?.noteDao.deleteNote(dbNote.id!);
       createNote(dbNote.title, dbNote.content);
     }
-    notes.add(dbNote);
   }
   dbProvider.db?.noteDao.clear();
   dbProvider.db?.noteDao.insertNotes(notes);
@@ -77,6 +76,7 @@ Future<http.Response?> createNote(String title, String content) async {
   http.Response response = await http.post(await getUri(),
       headers: await getHeaders(),
       body: json.encode({"title": title, "content": content}));
+
   Note note = Note.fromJson(json.decode(response.body));
   dbProvider.db?.noteDao.insertNote(note);
 
@@ -97,6 +97,13 @@ Future<http.Response> deleteNote(int noteId) async {
       });
   return await http.delete(
     Uri.parse("${await getBaseUrl()}/notes/$noteId"),
+    headers: await getHeaders(),
+  );
+}
+
+Future<http.Response> deleteAllNotes() async {
+  return await http.delete(
+    await getUri(),
     headers: await getHeaders(),
   );
 }
