@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/db_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,30 +36,42 @@ Future<Map<String, String>> getHeaders() async {
 
 Future<List<Note>> fetchNotes() async {
   bool isOnline = await hasNetwork();
-  var dbNotes = await (await dbProvider.getDataBase()).noteDao.getAllNotes();
+  var dbNotes = await (await dbProvider.getDatabase()).noteDao.getAllNotes();
 
   if (!isOnline) {
     return dbNotes;
   }
+
+  bool dirty = false;
+
+  var onlineNotes = await getAllNotes();
+
+  for (var dbNote in dbNotes) {
+    if (onlineNotes.where((i) => dbNote.id == i.id).isEmpty) {
+      dirty = true;
+      debugPrint(dbNote.id.toString());
+      await createNote(dbNote.title, dbNote.content);
+    }
+  }
+
+  if (dirty) {
+    onlineNotes = await getAllNotes();
+  }
+
+  dbProvider.getDatabase().then((db) {
+    db.noteDao.clear();
+    db.noteDao.insertNotes(onlineNotes);
+  });
+
+  return onlineNotes;
+}
+
+Future<List<Note>> getAllNotes() async {
   http.Response response =
       await http.get(await getUri(), headers: await getHeaders());
   var responseJson = json.decode(response.body);
 
-  List<Note> onlineNotes =
-      (responseJson as List).map((p) => Note.fromJson(p)).toList();
-
-  List<Note> notes = onlineNotes;
-
-  for (var dbNote in dbNotes) {
-    if (onlineNotes.where((i) => dbNote.id == i.id).isEmpty) {
-      dbProvider.db?.noteDao.deleteNote(dbNote.id!);
-      createNote(dbNote.title, dbNote.content);
-    }
-  }
-  dbProvider.db?.noteDao.clear();
-  dbProvider.db?.noteDao.insertNotes(notes);
-
-  return notes;
+  return (responseJson as List).map((p) => Note.fromJson(p)).toList();
 }
 
 Future<http.Response?> createNote(String title, String content) async {
@@ -70,7 +83,7 @@ Future<http.Response?> createNote(String title, String content) async {
     note.title = title;
     note.content = content;
 
-    dbProvider.getDataBase().then((db) async => {db.noteDao.insertNote(note)});
+    dbProvider.getDatabase().then((db) async => {db.noteDao.insertNote(note)});
     return null;
   }
   http.Response response = await http.post(await getUri(),
@@ -78,13 +91,13 @@ Future<http.Response?> createNote(String title, String content) async {
       body: json.encode({"title": title, "content": content}));
 
   Note note = Note.fromJson(json.decode(response.body));
-  dbProvider.db?.noteDao.insertNote(note);
+  dbProvider.getDatabase().then((db) => {db.noteDao.insertNote(note)});
 
   return response;
 }
 
 Future<http.Response> updateNote(Note note) async {
-  dbProvider.getDataBase().then((db) => {
+  dbProvider.getDatabase().then((db) => {
         db.noteDao.updateNote(note),
       });
   return await http.patch(await getUri(),
@@ -92,7 +105,7 @@ Future<http.Response> updateNote(Note note) async {
 }
 
 Future<http.Response> deleteNote(int noteId) async {
-  dbProvider.getDataBase().then((db) => {
+  dbProvider.getDatabase().then((db) => {
         db.noteDao.deleteNote(noteId),
       });
   return await http.delete(
@@ -102,7 +115,7 @@ Future<http.Response> deleteNote(int noteId) async {
 }
 
 Future<http.Response> deleteAllNotes() async {
-  dbProvider.getDataBase().then((db) => db.noteDao.clear());
+  dbProvider.getDatabase().then((db) => db.noteDao.clear());
   return await http.delete(
     await getUri(),
     headers: await getHeaders(),

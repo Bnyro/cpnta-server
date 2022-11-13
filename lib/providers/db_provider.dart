@@ -12,7 +12,7 @@ class DbProvider {
     return await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   }
 
-  Future<AppDatabase> getDataBase() async {
+  Future<AppDatabase> getDatabase() async {
     if (db == null) {
       return await _createDataBase();
     } else {
