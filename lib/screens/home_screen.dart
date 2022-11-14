@@ -64,14 +64,12 @@ class _HomePageState extends State<HomePage> {
                       style: Theme.of(context).textTheme.headline4,
                     );
                   } else {
-                    return ListView(
-                      children:
-                          List.generate(snapshot.requireData.length, (index) {
-                        return NoteWidget(
-                          note: snapshot.requireData[index],
-                          refreshNotes: _refreshNotes,
-                        );
-                      }),
+                    return ListView.builder(
+                      itemCount: snapshot.requireData.length,
+                      itemBuilder: (context, index) => NoteWidget(
+                        note: snapshot.requireData[index],
+                        refreshNotes: _refreshNotes,
+                      ),
                     );
                   }
                 }),

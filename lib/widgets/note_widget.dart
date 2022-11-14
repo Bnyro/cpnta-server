@@ -20,6 +20,7 @@ class NoteWidget extends StatefulWidget {
 
 class _NoteWidgetState extends State<NoteWidget> {
   Offset _tapPosition = Offset.zero;
+
   void _getTapPosition(TapDownDetails details) {
     final RenderBox referenceBox = context.findRenderObject() as RenderBox;
     setState(() {
@@ -54,7 +55,7 @@ class _NoteWidgetState extends State<NoteWidget> {
 
         // Show the context menu at the tap location
         position: RelativeRect.fromRect(
-            Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 30, 30),
+            Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 10, 10),
             Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
                 overlay.paintBounds.size.height)),
 
