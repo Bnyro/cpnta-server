@@ -91,14 +91,15 @@ class _NoteScreenState extends State<NoteScreen> {
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 10.0),
-          Opacity(
-            opacity: 0.5,
-            child: Column(children: [
-              Text("Created at ${formatTime(widget.note.createdAt)}"),
-              const SizedBox(height: 5.0),
-              Text("Modified at ${formatTime(widget.note.modifiedAt)}")
-            ]),
-          )
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (widget.note.createdAt != "")
+              Text("Created at ${formatTime(widget.note.createdAt)}",
+                  style: Theme.of(context).textTheme.caption),
+            const SizedBox(height: 5.0),
+            if (widget.note.modifiedAt != "")
+              Text("Modified at ${formatTime(widget.note.modifiedAt)}",
+                  style: Theme.of(context).textTheme.caption)
+          ]),
         ]),
       ),
       floatingActionButton: FloatingActionButton(
