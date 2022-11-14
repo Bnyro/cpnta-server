@@ -97,13 +97,16 @@ class _NoteWidgetState extends State<NoteWidget> {
                   children: [
                     if (widget.note.title != "")
                       Text(widget.note.title,
-                          style: Theme.of(context).textTheme.headline5),
+                          maxLines: 1,
+                          style: Theme.of(context).textTheme.titleMedium),
                     if (widget.note.title != "" && widget.note.content != "")
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 2),
                     if (widget.note.content != "")
                       Text(
                         widget.note.content,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                   ],
                 ))));
