@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import '../models/note.dart';
 import '../utilities/date_parser.dart';
 
+// ignore: must_be_immutable
 class NoteScreen extends StatefulWidget {
-  final Note note;
+  Note note;
   final bool isNew;
   final VoidCallback refreshNotes;
 
-  const NoteScreen({
+  NoteScreen({
     super.key,
     required this.note,
     required this.isNew,
@@ -39,13 +40,15 @@ class _NoteScreenState extends State<NoteScreen> {
         widget.note.content = contentController.text;
       });
 
-      var response = widget.isNew
+      var note = widget.isNew
           ? await createNote(titleController.text, contentController.text)
           : await updateNote(widget.note);
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Status code: ${response?.statusCode}"),
+        content: Text("Succesfully updated the note!"),
       ));
+      widget.note = note;
       widget.refreshNotes();
     }
   }

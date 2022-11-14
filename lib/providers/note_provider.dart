@@ -72,7 +72,7 @@ Future<List<Note>> getAllNotes() async {
   return (responseJson as List).map((p) => Note.fromJson(p)).toList();
 }
 
-Future<http.Response?> createNote(String title, String content) async {
+Future<Note> createNote(String title, String content) async {
   bool isOnline = await hasNetwork();
   if (!isOnline) {
     Note note = Note.empty();
@@ -82,7 +82,7 @@ Future<http.Response?> createNote(String title, String content) async {
     note.content = content;
 
     dbProvider.getDatabase().then((db) async => db.noteDao.insertNote(note));
-    return null;
+    return note;
   }
   http.Response response = await http.post(await getUri(),
       headers: await getHeaders(),
@@ -91,15 +91,16 @@ Future<http.Response?> createNote(String title, String content) async {
   Note note = Note.fromJson(json.decode(response.body));
   dbProvider.getDatabase().then((db) => db.noteDao.insertNote(note));
 
-  return response;
+  return Note.fromJson(jsonDecode(response.body));
 }
 
-Future<http.Response> updateNote(Note note) async {
+Future<Note> updateNote(Note note) async {
   dbProvider.getDatabase().then((db) {
     db.noteDao.updateNote(note);
   });
-  return await http.patch(await getUri(),
+  var response = await http.patch(await getUri(),
       headers: await getHeaders(), body: jsonEncode(note.toJson()));
+  return Note.fromJson(jsonDecode(response.body));
 }
 
 Future<http.Response> deleteNote(int noteId) async {
