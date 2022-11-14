@@ -81,7 +81,7 @@ Future<http.Response?> createNote(String title, String content) async {
     note.title = title;
     note.content = content;
 
-    dbProvider.getDatabase().then((db) async => {db.noteDao.insertNote(note)});
+    dbProvider.getDatabase().then((db) async => db.noteDao.insertNote(note));
     return null;
   }
   http.Response response = await http.post(await getUri(),
@@ -89,23 +89,23 @@ Future<http.Response?> createNote(String title, String content) async {
       body: json.encode({"title": title, "content": content}));
 
   Note note = Note.fromJson(json.decode(response.body));
-  dbProvider.getDatabase().then((db) => {db.noteDao.insertNote(note)});
+  dbProvider.getDatabase().then((db) => db.noteDao.insertNote(note));
 
   return response;
 }
 
 Future<http.Response> updateNote(Note note) async {
-  dbProvider.getDatabase().then((db) => {
-        db.noteDao.updateNote(note),
-      });
+  dbProvider.getDatabase().then((db) {
+    db.noteDao.updateNote(note);
+  });
   return await http.patch(await getUri(),
       headers: await getHeaders(), body: jsonEncode(note.toJson()));
 }
 
 Future<http.Response> deleteNote(int noteId) async {
-  dbProvider.getDatabase().then((db) => {
-        db.noteDao.deleteNote(noteId),
-      });
+  dbProvider.getDatabase().then((db) {
+    db.noteDao.deleteNote(noteId);
+  });
   return await http.delete(
     Uri.parse("${await getBaseUrl()}/notes/$noteId"),
     headers: await getHeaders(),

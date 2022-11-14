@@ -28,21 +28,21 @@ class _NoteWidgetState extends State<NoteWidget> {
   }
 
   void _deleteNote() {
-    deleteNote(widget.note.id!).then((value) => {
-          widget.refreshNotes(),
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Note deleted!'),
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  createNote(widget.note.title, widget.note.content)
-                      .then((value) => {widget.refreshNotes()});
-                },
-              ),
-            ),
-          )
-        });
+    deleteNote(widget.note.id!).then((value) {
+      widget.refreshNotes();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Note deleted!'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              createNote(widget.note.title, widget.note.content)
+                  .then((value) => widget.refreshNotes());
+            },
+          ),
+        ),
+      );
+    });
   }
 
   void _showContextMenu(BuildContext context) async {
@@ -77,14 +77,14 @@ class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => NoteScreen(
-                        note: widget.note,
-                        isNew: false,
-                        refreshNotes: widget.refreshNotes,
-                      )))
-            },
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => NoteScreen(
+                    note: widget.note,
+                    isNew: false,
+                    refreshNotes: widget.refreshNotes,
+                  )));
+        },
         onLongPress: () => _showContextMenu(context),
         onTapDown: (details) => _getTapPosition(details),
         child: Card(

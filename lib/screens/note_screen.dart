@@ -58,13 +58,13 @@ class _NoteScreenState extends State<NoteScreen> {
         title: const Text(appName),
         actions: [
           IconButton(
-              onPressed: () => {
-                    deleteNote(widget.note.id!).then((response) => {
-                          widget.refreshNotes(),
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Deleted"))),
-                        })
-                  },
+              onPressed: () {
+                deleteNote(widget.note.id!).then((response) {
+                  widget.refreshNotes();
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text("Deleted")));
+                });
+              },
               icon: const Icon(Icons.delete))
         ],
       ),
