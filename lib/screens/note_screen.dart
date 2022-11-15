@@ -59,12 +59,14 @@ class _NoteScreenState extends State<NoteScreen> {
           ? await createNote(titleController.text, contentController.text)
           : await updateNote(widget.note);
 
+      if (note.createdAt != "") note.createdAt = widget.note.createdAt;
+      widget.note = note;
+      widget.refreshNotes();
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Succesfully updated the note!"),
       ));
-      widget.note = note;
-      widget.refreshNotes();
     }
   }
 

@@ -6,8 +6,8 @@ class Note {
   int? id;
   String title;
   String content;
-  final String createdAt;
-  final String modifiedAt;
+  String createdAt;
+  String modifiedAt;
   String token;
 
   Note({
