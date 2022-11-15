@@ -1,7 +1,9 @@
 import 'package:cpnta/constants.dart';
+import 'package:cpnta/extensions/capitalize.dart';
 import 'package:cpnta/providers/note_provider.dart';
 import 'package:cpnta/widgets/edit_text_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../widgets/pref_widget.dart';
 
@@ -36,6 +38,18 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  void _showAboutDialog(BuildContext context) async {
+    PackageInfo pkgInfo = await PackageInfo.fromPlatform();
+    showAboutDialog(
+        context: context,
+        applicationName: pkgInfo.appName.capitalize(),
+        applicationVersion: pkgInfo.version + " (" + pkgInfo.buildNumber + ")",
+        children: [
+          const Text("Licensed under the GPL-3.0"),
+          const Text("Made by Bnyro with <3")
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +73,12 @@ class SettingsScreen extends StatelessWidget {
                 title: "Delete all notes",
                 summary: 'Delete all notes associated with the user token',
                 onClick: () => {_showDeleteAllDialog(context)},
+              ),
+              SizedBox(height: 15.0),
+              PrefWidget(
+                title: "About",
+                summary: 'About the app and the author',
+                onClick: () => {_showAboutDialog(context)},
               )
             ],
           ),
