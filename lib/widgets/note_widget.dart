@@ -1,5 +1,7 @@
+import 'package:cpnta/extensions/let.dart';
 import 'package:cpnta/screens/note_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/note.dart';
 
@@ -18,6 +20,23 @@ class NoteWidget extends StatefulWidget {
 }
 
 class _NoteWidgetState extends State<NoteWidget> {
+  var _maxLines = 2;
+
+  void _init() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.getDouble("maxLines")?.let((maxLines) {
+      setState(() {
+        _maxLines = maxLines.toInt();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -46,7 +65,7 @@ class _NoteWidgetState extends State<NoteWidget> {
                     if (widget.note.content != "")
                       Text(
                         widget.note.content,
-                        maxLines: 2,
+                        maxLines: _maxLines,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),

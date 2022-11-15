@@ -22,10 +22,16 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: appName,
         theme: ThemeData(
+          sliderTheme: SliderThemeData(
+            showValueIndicator: ShowValueIndicator.always,
+          ),
           colorScheme: lightColorScheme ?? _defaultLightColorScheme,
           useMaterial3: true,
         ),
         darkTheme: ThemeData(
+          sliderTheme: SliderThemeData(
+            showValueIndicator: ShowValueIndicator.always,
+          ),
           colorScheme: darkColorScheme ?? _defaultDarkColorScheme,
           useMaterial3: true,
         ),

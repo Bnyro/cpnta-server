@@ -2,6 +2,7 @@ import 'package:cpnta/constants.dart';
 import 'package:cpnta/extensions/capitalize.dart';
 import 'package:cpnta/providers/note_provider.dart';
 import 'package:cpnta/widgets/edit_text_pref.dart';
+import 'package:cpnta/widgets/slider_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -68,6 +69,14 @@ class SettingsScreen extends StatelessWidget {
                   prefKey: "token",
                   label: "Auth token",
                   defValue: defaultToken),
+              SizedBox(height: 15.0),
+              SliderPref(
+                title: "Preview maxlines",
+                prefKey: "maxLines",
+                defaultValue: 2,
+                min: 1,
+                max: 7,
+              ),
               SizedBox(height: 15.0),
               PrefWidget(
                 title: "Delete all notes",
