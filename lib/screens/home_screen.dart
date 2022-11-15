@@ -39,6 +39,23 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _deleteNote(Note note) {
+    deleteNote(note.id!).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Note deleted!'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              createNote(note.title, note.content)
+                  .then((value) => _refreshNotes());
+            },
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,12 +82,22 @@ class _HomePageState extends State<HomePage> {
                     );
                   } else {
                     return ListView.builder(
-                      itemCount: snapshot.requireData.length,
-                      itemBuilder: (context, index) => NoteWidget(
-                        note: snapshot.requireData[index],
-                        refreshNotes: _refreshNotes,
-                      ),
-                    );
+                        itemCount: snapshot.requireData.length,
+                        itemBuilder: (context, index) {
+                          final note = snapshot.requireData[index];
+                          return Dismissible(
+                              key: Key(note.id.toString()),
+                              onDismissed: ((direction) {
+                                setState(() {
+                                  snapshot.requireData.removeAt(index);
+                                  _deleteNote(note);
+                                });
+                              }),
+                              child: NoteWidget(
+                                note: note,
+                                refreshNotes: _refreshNotes,
+                              ));
+                        });
                   }
                 }),
           )),
