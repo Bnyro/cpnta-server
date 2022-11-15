@@ -23,6 +23,7 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
+  bool isDirty = false;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
 
@@ -31,6 +32,20 @@ class _NoteScreenState extends State<NoteScreen> {
     super.initState();
     titleController.text = widget.note.title;
     contentController.text = widget.note.content;
+    titleController.addListener(() {
+      _onControllerListenerInvocation();
+    });
+    contentController.addListener(() {
+      _onControllerListenerInvocation();
+    });
+  }
+
+  void _onControllerListenerInvocation() {
+    final dirty = widget.note.title != titleController.text ||
+        widget.note.content != contentController.text;
+    setState(() {
+      isDirty = dirty;
+    });
   }
 
   void _onFabPressed() async {
@@ -105,10 +120,12 @@ class _NoteScreenState extends State<NoteScreen> {
           ]),
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onFabPressed,
-        child: const Icon(Icons.save),
-      ),
+      floatingActionButton: isDirty
+          ? FloatingActionButton(
+              onPressed: _onFabPressed,
+              child: const Icon(Icons.save),
+            )
+          : null,
     );
   }
 }
