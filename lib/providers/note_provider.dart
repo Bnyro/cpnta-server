@@ -54,6 +54,7 @@ Future<bool> executeCommits() async {
           // create note
           final note = notes.firstWhere((i) => i.id == commit.noteId);
           await createNote(note.title, note.content);
+          db.noteDao.deleteNote(note.id!);
           break;
         }
 
