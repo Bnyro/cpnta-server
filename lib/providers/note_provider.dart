@@ -114,6 +114,7 @@ Future<List<Note>> getAllNotes() async {
 
 Future<Note> createNote(String title, String content) async {
   bool isOnline = await hasNetwork();
+  final db = await dbProvider.getDatabase();
   if (!isOnline) {
     Note note = Note.empty();
     note.id = getRandomInt();
@@ -121,17 +122,16 @@ Future<Note> createNote(String title, String content) async {
     note.title = title;
     note.content = content;
 
-    final db = await dbProvider.getDatabase();
-
     db.noteDao.insertNote(note);
     db.commitDao.insertCommit(Commit(note.id!, CommitType.create));
+    return note;
   }
   http.Response response = await http.post(await getUri(),
       headers: await getHeaders(),
       body: json.encode({"title": title, "content": content}));
 
   Note note = Note.fromJson(json.decode(response.body));
-  dbProvider.getDatabase().then((db) => db.noteDao.insertNote(note));
+  db.noteDao.insertNote(note);
 
   return Note.fromJson(jsonDecode(response.body));
 }
