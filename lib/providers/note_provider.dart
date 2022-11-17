@@ -39,12 +39,12 @@ enum x { a }
 Future<bool> executeCommits() async {
   bool isOnline = await hasNetwork();
   if (!isOnline) return false;
-  final commits =
-      await (await dbProvider.getDatabase()).commitDao.getAllCommits();
+  final db = await dbProvider.getDatabase();
+
+  final commits = await db.commitDao.getAllCommits();
 
   if (commits.isEmpty) return false;
 
-  final db = await dbProvider.getDatabase();
   final notes = await db.noteDao.getAllNotes();
 
   for (final commit in commits) {

@@ -3,18 +3,18 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class CommitDao {
-  @Query('SELECT * FROM Commit')
+  @Query('SELECT * FROM Commits')
   Future<List<Commit>> getAllCommits();
-  @insert
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertCommit(Commit commit);
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<List<int>> insertCommits(List<Commit> commits);
   @update
   Future<void> updateCommit(Commit commit);
-  @Query("DELETE FROM Commit where id = :id")
+  @Query("DELETE FROM Commits where id = :id")
   Future<void> deleteCommit(int id);
   @delete
   Future<int> deleteAll(List<Commit> commits);
-  @Query('DELETE FROM Commit')
+  @Query('DELETE FROM Commits')
   Future<void> clear();
 }

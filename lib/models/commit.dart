@@ -1,6 +1,6 @@
 import 'package:floor/floor.dart';
 
-@entity
+@Entity(tableName: "Commits")
 class Commit {
   @PrimaryKey(autoGenerate: false)
   final int noteId;

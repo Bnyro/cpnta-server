@@ -1,6 +1,6 @@
 import 'dart:math';
 
-const int intMaxValue = 9223372036854775807;
+const int intMaxValue = 4294967296;
 
 int getRandomInt() {
   return Random().nextInt(intMaxValue);
