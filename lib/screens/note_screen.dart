@@ -76,6 +76,24 @@ class _NoteScreenState extends State<NoteScreen> {
     }
   }
 
+  void _deleteNote() {
+    deleteNote(widget.note.id!).then((value) {
+      widget.refreshNotes();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Note deleted!'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              createNote(widget.note.title, widget.note.content)
+                  .then((value) => widget.refreshNotes());
+            },
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,15 +101,7 @@ class _NoteScreenState extends State<NoteScreen> {
       appBar: AppBar(
         title: const Text(appName),
         actions: [
-          IconButton(
-              onPressed: () {
-                deleteNote(widget.note.id!).then((response) {
-                  widget.refreshNotes();
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text("Deleted")));
-                });
-              },
-              icon: const Icon(Icons.delete))
+          IconButton(onPressed: _deleteNote, icon: const Icon(Icons.delete))
         ],
       ),
       body: Container(
