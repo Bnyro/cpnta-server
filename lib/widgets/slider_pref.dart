@@ -2,6 +2,7 @@ import 'package:cpnta/extensions/let.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class SliderPref extends StatefulWidget {
   final String title;
   final String prefKey;

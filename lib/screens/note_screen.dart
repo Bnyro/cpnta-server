@@ -8,7 +8,7 @@ import '../utilities/date_parser.dart';
 // ignore: must_be_immutable
 class NoteScreen extends StatefulWidget {
   Note note;
-  final bool isNew;
+  bool isNew;
   final VoidCallback refreshNotes;
 
   NoteScreen({
@@ -59,13 +59,19 @@ class _NoteScreenState extends State<NoteScreen> {
           ? await createNote(titleController.text, contentController.text)
           : await updateNote(widget.note);
 
+      final succesText = widget.isNew
+          ? "Succesfully created the note!"
+          : "Succesfully updated the note!";
+
+      widget.isNew = false;
+
       if (note.createdAt != "") note.createdAt = widget.note.createdAt;
       widget.note = note;
       widget.refreshNotes();
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Succesfully updated the note!"),
+        content: Text(succesText),
       ));
     }
   }
