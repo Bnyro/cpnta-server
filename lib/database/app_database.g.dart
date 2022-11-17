@@ -63,6 +63,8 @@ class _$AppDatabase extends AppDatabase {
 
   NoteDao? _noteDaoInstance;
 
+  CommitDao? _commitDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -86,6 +88,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Note` (`id` INTEGER, `title` TEXT NOT NULL, `content` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `modifiedAt` TEXT NOT NULL, `token` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Commit` (`noteId` INTEGER NOT NULL, `method` INTEGER NOT NULL, PRIMARY KEY (`noteId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -96,6 +100,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   NoteDao get noteDao {
     return _noteDaoInstance ??= _$NoteDao(database, changeListener);
+  }
+
+  @override
+  CommitDao get commitDao {
+    return _commitDaoInstance ??= _$CommitDao(database, changeListener);
   }
 }
 
@@ -194,5 +203,86 @@ class _$NoteDao extends NoteDao {
   @override
   Future<int> deleteAll(List<Note> notes) {
     return _noteDeletionAdapter.deleteListAndReturnChangedRows(notes);
+  }
+}
+
+class _$CommitDao extends CommitDao {
+  _$CommitDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _commitInsertionAdapter = InsertionAdapter(
+            database,
+            'Commit',
+            (Commit item) => <String, Object?>{
+                  'noteId': item.noteId,
+                  'method': item.method
+                }),
+        _commitUpdateAdapter = UpdateAdapter(
+            database,
+            'Commit',
+            ['noteId'],
+            (Commit item) => <String, Object?>{
+                  'noteId': item.noteId,
+                  'method': item.method
+                }),
+        _commitDeletionAdapter = DeletionAdapter(
+            database,
+            'Commit',
+            ['noteId'],
+            (Commit item) => <String, Object?>{
+                  'noteId': item.noteId,
+                  'method': item.method
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Commit> _commitInsertionAdapter;
+
+  final UpdateAdapter<Commit> _commitUpdateAdapter;
+
+  final DeletionAdapter<Commit> _commitDeletionAdapter;
+
+  @override
+  Future<List<Commit>> getAllCommits() async {
+    return _queryAdapter.queryList('SELECT * FROM Commit',
+        mapper: (Map<String, Object?> row) =>
+            Commit(row['noteId'] as int, row['method'] as int));
+  }
+
+  @override
+  Future<void> deleteCommit(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Commit where id = ?1', arguments: [id]);
+  }
+
+  @override
+  Future<void> clear() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Commit');
+  }
+
+  @override
+  Future<void> insertCommit(Commit commit) async {
+    await _commitInsertionAdapter.insert(commit, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<List<int>> insertCommits(List<Commit> commits) {
+    return _commitInsertionAdapter.insertListAndReturnIds(
+        commits, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> updateCommit(Commit commit) async {
+    await _commitUpdateAdapter.update(commit, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteAll(List<Commit> commits) {
+    return _commitDeletionAdapter.deleteListAndReturnChangedRows(commits);
   }
 }

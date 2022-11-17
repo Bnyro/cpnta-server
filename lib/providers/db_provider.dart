@@ -2,7 +2,7 @@ import '../database/app_database.dart';
 
 class DbProvider {
   static final DbProvider _singleton = DbProvider._internal();
-  AppDatabase? db;
+  AppDatabase? _db;
 
   factory DbProvider() {
     return _singleton;
@@ -13,10 +13,10 @@ class DbProvider {
   }
 
   Future<AppDatabase> getDatabase() async {
-    if (db == null) {
+    if (_db == null) {
       return await _createDataBase();
     } else {
-      return db!;
+      return _db!;
     }
   }
 
