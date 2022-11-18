@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/enums/commit_type.dart';
 import 'package:cpnta/models/commit.dart';
 import 'package:cpnta/providers/db_provider.dart';
-import 'package:cpnta/utilities/random_int.dart';
 import 'package:http/http.dart' as http;
 import 'package:cpnta/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'network_provider.dart';
+
+final intMaxValue = 4294967296;
 
 DbProvider dbProvider = DbProvider();
 
@@ -118,7 +120,7 @@ Future<Note> createNote(String title, String content) async {
   final db = await dbProvider.getDatabase();
   if (!isOnline) {
     Note note = Note.empty();
-    note.id = getRandomInt();
+    note.id = await getAvailableId();
     note.token = await getToken();
     note.title = title;
     note.content = content;
@@ -142,35 +144,47 @@ Future<Note> updateNote(Note note) async {
   db.noteDao.updateNote(note);
 
   final isOnline = await hasNetwork();
-  if (!isOnline) db.commitDao.insertCommit(Commit(note.id!, CommitType.update));
-
-  var response = await http.patch(await getUri(),
-      headers: await getHeaders(), body: jsonEncode(note.toJson()));
-  return Note.fromJson(jsonDecode(response.body));
+  if (!isOnline) {
+    db.commitDao.insertCommit(Commit(note.id!, CommitType.update));
+    return note;
+  } else {
+    final response = await http.patch(await getUri(),
+        headers: await getHeaders(), body: jsonEncode(note.toJson()));
+    return Note.fromJson(jsonDecode(response.body));
+  }
 }
 
-Future<http.Response> deleteNote(int noteId) async {
+Future<void> deleteNote(int noteId) async {
   final db = await dbProvider.getDatabase();
   db.noteDao.deleteNote(noteId);
 
   final isOnline = await hasNetwork();
 
-  if (!isOnline) db.commitDao.insertCommit(Commit(noteId, CommitType.delete));
-
-  return await http.delete(
-    Uri.parse("${await getBaseUrl()}/notes/$noteId"),
-    headers: await getHeaders(),
-  );
+  if (!isOnline)
+    db.commitDao.insertCommit(Commit(noteId, CommitType.delete));
+  else
+    await http.delete(
+      Uri.parse("${await getBaseUrl()}/notes/$noteId"),
+      headers: await getHeaders(),
+    );
 }
 
-Future<http.Response> deleteAllNotes() async {
+Future<void> deleteAllNotes() async {
   final db = await dbProvider.getDatabase();
   db.noteDao.clear();
   final isOnline = await hasNetwork();
   if (!isOnline)
-    db.commitDao.insertCommit(Commit(getRandomInt(), CommitType.clear));
-  return await http.delete(
-    await getUri(),
-    headers: await getHeaders(),
-  );
+    db.commitDao.insertCommit(Commit(intMaxValue, CommitType.clear));
+  else
+    await http.delete(await getUri(), headers: await getHeaders());
+}
+
+Future<int> getAvailableId() async {
+  final num = Random().nextInt(intMaxValue);
+  final db = await dbProvider.getDatabase();
+  final notes = await db.noteDao.getAllNotes();
+  final commits = await db.commitDao.getAllCommits();
+  return notes.any((i) => i.id == num) || commits.any((i) => i.noteId == num)
+      ? await getAvailableId()
+      : num;
 }
