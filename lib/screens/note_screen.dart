@@ -10,12 +10,14 @@ class NoteScreen extends StatefulWidget {
   Note note;
   bool isNew;
   final VoidCallback refreshNotes;
+  bool? isDirty;
 
   NoteScreen({
     super.key,
     required this.note,
     required this.isNew,
     required this.refreshNotes,
+    this.isDirty,
   });
 
   @override
@@ -30,6 +32,7 @@ class _NoteScreenState extends State<NoteScreen> {
   @override
   void initState() {
     super.initState();
+    isDirty = widget.isDirty ?? false;
     titleController.text = widget.note.title;
     contentController.text = widget.note.content;
     titleController.addListener(() {

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import '../models/note.dart';
 import '../providers/note_provider.dart';
@@ -15,6 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late StreamSubscription _intentData;
+
   var _notes = fetchNotes();
 
   void _onFabPressed() {
@@ -53,6 +58,31 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       );
+    });
+  }
+
+  @override
+  void dispose() {
+    _intentData.cancel();
+    super.dispose();
+  }
+
+  void _onReceiveData(String data) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => NoteScreen(
+            note: Note.build("", data),
+            isNew: true,
+            refreshNotes: _refreshNotes,
+            isDirty: true)));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _intentData =
+        ReceiveSharingIntent.getTextStream().listen((String value) {});
+    ReceiveSharingIntent.getInitialText().then((String? value) {
+      if (value != null) _onReceiveData(value);
     });
   }
 

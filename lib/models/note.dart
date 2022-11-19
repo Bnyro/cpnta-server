@@ -39,6 +39,13 @@ class Note {
         token: "");
   }
 
+  factory Note.build(String title, String content) {
+    final note = Note.empty();
+    note.title = title;
+    note.content = content;
+    return note;
+  }
+
   Map<String, dynamic> toJson() =>
       {"ID": id, "title": title, "content": content};
 }
