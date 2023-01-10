@@ -1,6 +1,7 @@
 import 'package:cpnta/constants.dart';
 import 'package:cpnta/providers/note_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/note.dart';
 import '../utilities/date_parser.dart';
@@ -79,6 +80,11 @@ class _NoteScreenState extends State<NoteScreen> {
     }
   }
 
+  void _copyNote() async {
+    String text = widget.note.title + widget.note.content;
+    await Clipboard.setData(ClipboardData(text: text));
+  }
+
   void _deleteNote() {
     deleteNote(widget.note.id!).then((value) {
       widget.refreshNotes();
@@ -104,6 +110,7 @@ class _NoteScreenState extends State<NoteScreen> {
       appBar: AppBar(
         title: const Text(appName),
         actions: [
+          IconButton(onPressed: _copyNote, icon: const Icon(Icons.copy)),
           IconButton(onPressed: _deleteNote, icon: const Icon(Icons.delete))
         ],
       ),
